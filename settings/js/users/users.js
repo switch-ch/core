@@ -472,27 +472,6 @@ var UserList = {
 				);
 			};
 		}
-		var addGroup = function (select, group) {
-			GroupList.addGroup(escapeHTML(group));
-		};
-		var label;
-		if (oc_isadmin) {
-			label = t('settings', 'add group');
-		}
-		else {
-			label = null;
-		}
-		/*
-		$element.multiSelect({
-			createCallback: addGroup,
-			createText: label,
-			selectedFirst: true,
-			checked: checked,
-			oncheck: checkHandler,
-			onuncheck: checkHandler,
-			minWidth: 100
-		});
-		*/
 		if (user) {
 			$element.change(function(ev) {
 				if (ev.added) {
@@ -503,8 +482,15 @@ var UserList = {
 			});
 		}
 		OC.Settings.setupGroupsSelect($element, {
-			width: 100,
-			placeholder: t('settings', 'Groups')
+			width: 150,
+			placeholder: t('settings', 'Groups'),
+			createSearchChoice: function(term) {
+				GroupList.addGroup(escapeHTML(term));
+				return {
+					id: term,
+					displayname: term
+				};
+			}
 		});
 		if (selectedGroups) {
 			$element.select2('val', selectedGroups);
@@ -547,7 +533,7 @@ var UserList = {
 			}
 		});
 		OC.Settings.setupGroupsSelect($element, {
-			width: 100,
+			width: 150,
 			placeholder: t('settings', 'Group Admin')
 		});
 		if (selectedGroups) {
