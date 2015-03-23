@@ -74,6 +74,21 @@ function revertFile(file, revision) {
 			} else {
 				$('#dropdown').slideUp(OC.menuSpeed, function() {
 					$('#dropdown').closest('tr').find('.modified:first').html(relative_modified_date(revision));
+					//trigger reload of thumbnail
+					var thumbnail = $('#dropdown').closest('tr').find('.thumbnail:first');
+					if (thumbnail.length > 0) {
+						var url = thumbnail.css('background-image');
+						//strip of url(...)
+						url = url.replace('url(','').replace(')','');
+
+						var url_hash = OC.parseQueryString(url);
+						var random = Math.round((new Date()).getTime() / 1000);
+						url = OC.generateUrl('/core/preview.png?') + OC.buildQueryString(_.extend(url_hash, {r: random}));
+
+						url = 'url(' + url + ')';
+						thumbnail.css('background-image', url);
+					}
+
 					$('#dropdown').remove();
 					$('tr').removeClass('mouseOver');
 				});
