@@ -323,4 +323,14 @@ class OC_DB {
 		$connection = \OC::$server->getDatabaseConnection();
 		return $connection->tableExists($table);
 	}
+
+	/**
+	 * Espace a parameter to be used in a LIKE query
+	 *
+	 * @param string $param
+	 * @return string
+	 */
+	public static function escapeLikeParameter($param) {
+		return addcslashes($param, '\\_%');
+	}
 }
