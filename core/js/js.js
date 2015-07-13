@@ -1414,7 +1414,6 @@ function initCore() {
 		$('body').delegate('#app-content', 'apprendered', adjustControlsWidth);
 
 	}
-
 }
 
 $(document).ready(initCore);

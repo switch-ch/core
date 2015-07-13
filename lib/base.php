@@ -410,6 +410,10 @@ class OC {
 		OC_Util::addVendorScript('core', 'backbone/backbone');
 		OC_Util::addScript('oc-backbone');
 
+		OC_Util::addVendorScript('js-webdav-client/dist-unminified');
+		OC_Util::addScript('files/fileinfo');
+		OC_Util::addScript('files/client');
+
 		// avatars
 		if (\OC::$server->getSystemConfig()->getValue('enable_avatars', true) === true) {
 			\OC_Util::addScript('placeholder');
