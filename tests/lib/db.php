@@ -391,7 +391,7 @@ class Test_DB extends \Test\TestCase {
 	/**
 	 * @dataProvider insertAndSelectDataProvider
 	 */
-	public function testInsertAndSelectData($expected) {
+	public function testInsertAndSelectData($expected, $skipOnMysql) {
 		$table = "*PREFIX*{$this->text_table}";
 
 		$query = OC_DB::prepare("INSERT INTO `$table` (`textfield`) VALUES (?)");
@@ -399,17 +399,21 @@ class Test_DB extends \Test\TestCase {
 		$this->assertEquals(1, $result);
 
 		$actual = OC_DB::prepare("SELECT `textfield` FROM `$table`")->execute()->fetchOne();
+		$config = \OC::$server->getConfig();
+		if($skipOnMysql && $config->getSystemValue('dbtype', 'sqlite') === 'mysql' && $config->getSystemValue('mysql.utf8mb4', false) === false) {
+			return;
+		}
 		$this->assertSame($expected, $actual);
 	}
 
 	public function insertAndSelectDataProvider() {
 		return [
-			['abcdefghijklmnopqrstuvwxyzABCDEFGHIKLMNOPQRSTUVWXYZ'],
-			['0123456789'],
-			['äöüÄÖÜß!"§$%&/()=?#\'+*~°^`´'],
-			['²³¼½¬{[]}\\'],
-			['♡⚗'],
-			['💩'], # :hankey: on github
+			['abcdefghijklmnopqrstuvwxyzABCDEFGHIKLMNOPQRSTUVWXYZ', false],
+			['0123456789', false],
+			['äöüÄÖÜß!"§$%&/()=?#\'+*~°^`´', false],
+			['²³¼½¬{[]}\\', false],
+			['♡⚗', false],
+			['💩', true], # :hankey: on github
 		];
 	}
 }
