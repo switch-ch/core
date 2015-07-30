@@ -64,12 +64,7 @@
 			<div id="settings" class="svg">
 				<div id="expand" tabindex="6" role="link">
 					<?php if ($_['enableAvatars']): ?>
-					<div class="avatardiv<?php if ($_['userAvatarSet']) { print_unescaped(' avatardiv-shown'); } else { print_unescaped('" style="display: none'); } ?>">
-						<?php if ($_['userAvatarSet']): ?>
-							<img src="<?php p(\OC::$server->getURLGenerator()->linkToRoute('core.avatar.getAvatar', ['userId' => $_['user_uid'], 'size' => 32]));?>?requesttoken=<?php p(urlencode($_['requesttoken'])); ?>"
-								alt="">
-						<?php endif; ?>
-					</div>
+					<div class="avatardiv" <?php if (!$_['userAvatarSet']) { print_unescaped('style="display: none"'); } ?>></div>
 					<?php endif; ?>
 					<span id="expandDisplayName"><?php  p(trim($_['user_displayname']) != '' ? $_['user_displayname'] : $_['user_uid']) ?></span>
 					<img class="svg" alt="" src="<?php print_unescaped(image_path('', 'actions/caret.svg')); ?>">
