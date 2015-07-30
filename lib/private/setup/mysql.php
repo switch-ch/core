@@ -97,8 +97,9 @@ class MySQL extends AbstractDatabase {
 	private function createDatabase($connection) {
 		$name = $this->dbname;
 		$user = $this->dbuser;
+		$characterSet = \OC::$server->getSystemConfig()->getValue('mysql.utf8mb4', false) ? 'utf8mb4' : 'utf8';
 		//we cant use OC_BD functions here because we need to connect as the administrative user.
-		$query = "CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET utf8 COLLATE utf8_bin;";
+		$query = "CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET " . $characterSet . " COLLATE " . $characterSet . "_bin;";
 		$result = mysql_query($query, $connection);
 		if(!$result) {
 			$entry = $this->trans->t('DB Error: "%s"', array(mysql_error($connection))) . '<br />';
