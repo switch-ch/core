@@ -6,7 +6,9 @@
 		"underscore/underscore.js",
 		"moment/min/moment-with-locales.js",
 		"handlebars/handlebars.js",
-		"blueimp-md5/js/md5.js"
+		"blueimp-md5/js/md5.js",
+        "es6-promise/dist/es6-promise.js",
+        "davclient.js/lib/client.js"
 	],
 	"libraries": [
 		"jquery-showpassword.js",
