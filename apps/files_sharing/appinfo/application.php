@@ -134,5 +134,26 @@ class Application extends App {
 	public function setupPropagation() {
 		$propagationManager = $this->getContainer()->query('PropagationManager');
 		\OCP\Util::connectHook('OC_Filesystem', 'setup', $propagationManager, 'globalSetup');
+		$groupManager = $this->getContainer()->getServer()->getGroupManager();
+
+		$mountProvider = $this->getContainer()->query('MountProvider');
+		$sharesBefore = [];
+
+		$groupManager->listen('\OC\Group', 'preAddUser', function (\OCP\IGroup $group, \OCP\IUser $user) use ($propagationManager, $sharesBefore) {
+			$sharesBefore = \OCP\Share::getItemsSharedWithUser('file', $user->getUID());
+		});
+		$groupManager->listen('\OC\Group', 'postAddUser', function (\OCP\IGroup $group, \OCP\IUser $user) use ($propagationManager, $sharesBefore) {
+			$sharesAfter = \OCP\Share::getItemsSharedWithUser('file', $user->getUID());
+
+			$newShares = array_udiff(
+				$sharesAfter,
+				$sharesBefore,
+				function($share1, $share2) {
+					return ($share2['id'] - $share1['id']);
+				}
+			);
+
+			$propagationManager->propagateSharesToUser($newShares, $user->getUID());
+		});
 	}
 }
