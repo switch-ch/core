@@ -216,6 +216,17 @@
 				this._detailsView.addDetailView(new OCA.Files.MainFileInfoDetailView({fileList: this, fileActions: this.fileActions}));
 				this._detailsView.$el.insertBefore(this.$el);
 				this._detailsView.$el.addClass('disappear');
+
+				this.fileActions.registerAction({
+					name: 'Details',
+					mime: 'all',
+					permissions: OC.PERMISSION_READ,
+					actionHandler: function(fileName, context) {
+						var fileInfo = self.elementToFile(context.$file);
+						self._updateDetailsView(fileInfo);
+						OC.Apps.showAppSidebar();
+					}
+				});
 			}
 
 			this.$el.find('#controls').prepend(this.breadcrumb.$el);
@@ -339,7 +350,6 @@
 			}
 
 			if (!fileName) {
-				OC.Apps.hideAppSidebar(this._detailsView.$el);
 				this._detailsView.setFileInfo(null);
 				this._currentFileModel = null;
 				return;
@@ -354,7 +364,6 @@
 
 			this._detailsView.setFileInfo(model);
 			this._detailsView.$el.scrollTop(0);
-			_.defer(OC.Apps.showAppSidebar, this._detailsView.$el);
 		},
 
 		/**
