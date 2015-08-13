@@ -160,11 +160,39 @@ class Migrator {
 		return new Table($newName, $table->getColumns(), $newIndexes, array(), 0, $table->getOptions());
 	}
 
+	protected function printSchema(Schema $schema) {
+		$tables = array();
+
+		foreach ($schema->getTables() as $table) {
+			$columns = array();
+			foreach($table->getColumns() as $column) {
+				$columns[] = $column->getName();
+			}
+			sort($columns);
+			$indexes = array();
+			foreach($table->getIndexes() as $index) {
+				$indexes[] = $index->getName();
+			}
+			sort($indexes);
+			$tables[$table->getName()] = array(
+				'columns' => $columns,
+				'indexes' => $indexes
+			);
+		}
+		ksort($tables);
+		print_r($tables);
+	}
+
 	protected function getDiff(Schema $targetSchema, \Doctrine\DBAL\Connection $connection) {
 		$filterExpression = $this->getFilterExpression();
 		$this->connection->getConfiguration()->
 		setFilterSchemaAssetsExpression($filterExpression);
 		$sourceSchema = $connection->getSchemaManager()->createSchema();
+
+		echo('Source:' . PHP_EOL);
+		$this->printSchema($sourceSchema);
+		echo('Target:' . PHP_EOL);
+		$this->printSchema($targetSchema);
 
 		// remove tables we don't know about
 		/** @var $table \Doctrine\DBAL\Schema\Table */
