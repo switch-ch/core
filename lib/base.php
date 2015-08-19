@@ -391,7 +391,6 @@ class OC {
 			throw new \Exception('Cannot read core/js/core.json');
 		}
 
-		OC_Util::addVendorScript('es6-promise/dist/es6-promise');
 		OC_Util::addScript("placeholders");
 		OC_Util::addScript("jquery-tipsy");
 		OC_Util::addScript("compatibility");
