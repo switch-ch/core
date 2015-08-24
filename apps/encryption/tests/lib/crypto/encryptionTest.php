@@ -40,6 +40,12 @@ class EncryptionTest extends TestCase {
 	private $encryptAllMock;
 
 	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	private $decryptAllMock;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	private $sessionMock;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject */
 	private $cryptMock;
 
 	/** @var \PHPUnit_Framework_MockObject_MockObject */
@@ -63,7 +69,13 @@ class EncryptionTest extends TestCase {
 		$this->keyManagerMock = $this->getMockBuilder('OCA\Encryption\KeyManager')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->sessionMock = $this->getMockBuilder('OCA\Encryption\Session')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->encryptAllMock = $this->getMockBuilder('OCA\Encryption\Crypto\EncryptAll')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->decryptAllMock = $this->getMockBuilder('OCA\Encryption\Crypto\DecryptAll')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->loggerMock = $this->getMockBuilder('OCP\ILogger')
@@ -81,7 +93,9 @@ class EncryptionTest extends TestCase {
 			$this->cryptMock,
 			$this->keyManagerMock,
 			$this->utilMock,
+			$this->sessionMock,
 			$this->encryptAllMock,
+			$this->decryptAllMock,
 			$this->loggerMock,
 			$this->l10nMock
 		);
