@@ -1102,3 +1102,10 @@ fieldset.warning legend + p, fieldset.update legend + p {
 @-ms-viewport {
 	width: device-width;
 }
+
+/* hidden input type=file field */
+input.hiddenuploadfield {
+	width: 0;
+	opacity: 0;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+}
