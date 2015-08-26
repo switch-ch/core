@@ -29,6 +29,17 @@ namespace OC\Repair;
 use OC\Hooks\BasicEmitter;
 
 class RepairMimeTypes extends BasicEmitter implements \OC\RepairStep {
+	/**
+	 * @var \OCP\IConfig
+	 */
+	protected $config;
+
+	/**
+	 * @param \OCP\IConfig $config
+	 */
+	public function __construct($config) {
+		$this->config = $config;
+	}
 
 	public function getName() {
 		return 'Repair mime types';
@@ -244,14 +255,13 @@ class RepairMimeTypes extends BasicEmitter implements \OC\RepairStep {
 	 */
 	public function run() {
 
-		$config = \OC::$server->getConfig();
-		$ocVersionFromBeforeUpdate = $config->getSystemValue('version', '0.0.0');
+		$ocVersionFromBeforeUpdate = $this->config->getSystemValue('version', '0.0.0');
 
 		// NOTE TO DEVELOPERS: when adding new mime types, please make sure to
 		// add a version comparison to avoid doing it every time
 
 		// only update mime types if necessary as it can be expensive
-		if (version_compare($ocVersionFromBeforeUpdate, '8.1.0', '<')) {
+		if (version_compare($ocVersionFromBeforeUpdate, '8.2.0', '<')) {
 			if ($this->fixOfficeMimeTypes()) {
 				$this->emit('\OC\Repair', 'info', array('Fixed office mime types'));
 			}

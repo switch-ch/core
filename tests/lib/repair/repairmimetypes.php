@@ -20,17 +20,20 @@ class RepairMimeTypes extends \Test\TestCase {
 
 	private $storage;
 
-	private $oldVersion;
-
 	protected function setUp() {
 		parent::setUp();
 
-		$config = \OC::$server->getConfig();
-		$this->oldVersion = $config->getSystemValue('version', '0.0.0.0');
-		$config->setSystemValue('version', '8.0.0.0');
+		$config = $this->getMockBuilder('OCP\IConfig')
+			->disableOriginalConstructor()
+			->getMock();
+		$config->expects($this->any())
+			->method('getSystemValue')
+			->with('version')
+			->will($this->returnValue('8.0.0.0'));
+
 		$this->storage = new \OC\Files\Storage\Temporary([]);
 
-		$this->repair = new \OC\Repair\RepairMimeTypes();
+		$this->repair = new \OC\Repair\RepairMimeTypes($config);
 	}
 
 	protected function tearDown() {
@@ -40,9 +43,6 @@ class RepairMimeTypes extends \Test\TestCase {
 		$this->clearMimeTypes();
 
 		DummyFileCache::clearCachedMimeTypes();
-
-		$config = \OC::$server->getConfig();
-		$config->setSystemValue('version', $this->oldVersion);
 
 		parent::tearDown();
 	}
