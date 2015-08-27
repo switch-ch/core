@@ -79,19 +79,46 @@ class Users {
 	public function addUser(){
 		$userId = isset($_POST['userid']) ? $_POST['userid'] : null;
 		$password = isset($_POST['password']) ? $_POST['password'] : null;
+		$groups = isset($_POST['groups']) ? $_POST['groups'] : null;
+		$user = $this->userSession->getUser();
+		$isAdmin = $this->groupManager->isAdmin($user->getUID());
+
 		if($this->userManager->userExists($userId)) {
 			\OCP\Util::writeLog('ocs_api', 'Failed addUser attempt: User already exists.', \OCP\Util::ERROR);
 			return new OC_OCS_Result(null, 102, 'User already exists');
+		}
+		if(is_array($groups)) {
+			foreach ($groups as $key => $group) {
+				if(!$this->groupManager->groupExists($group)){
+					return new OC_OCS_Result(null, 104, 'group '.$group.' does not exist ');
+				}
+				if(!$isAdmin && !OC_SubAdmin::isSubAdminofGroup($user->getUID(), $group)) {
+					return new OC_OCS_Result(null, 105, 'insufficient privileges for group '. $group);
+				}
+			}
 		} else {
-			try {
-				$this->userManager->createUser($userId, $password);
-				\OCP\Util::writeLog('ocs_api', 'Successful addUser call with userid: '.$_POST['userid'], \OCP\Util::INFO);
-				return new OC_OCS_Result(null, 100);
-			} catch (\Exception $e) {
-				\OCP\Util::writeLog('ocs_api', 'Failed addUser attempt with exception: '.$e->getMessage(), \OCP\Util::ERROR);
-				return new OC_OCS_Result(null, 101, 'Bad request');
+			if(!$isAdmin) {
+				return new OC_OCS_Result(null, 106, 'no group specified (required for subadmins)');
 			}
 		}
+		try {
+			$this->userManager->createUser($userId, $password);
+
+			if(is_array($groups)) {
+				foreach ($groups as $key => $group) {
+					$this->groupManager->get($group)->addUser(
+						$this->userManager->get($userId)
+					);
+				}
+			}
+
+			\OCP\Util::writeLog('ocs_api', 'Successful addUser call with userid: '.$_POST['userid'], \OCP\Util::INFO);
+			return new OC_OCS_Result(null, 100);
+		} catch (\Exception $e) {
+			\OCP\Util::writeLog('ocs_api', 'Failed addUser attempt with exception: '.$e->getMessage(), \OCP\Util::ERROR);
+			return new OC_OCS_Result(null, 101, 'Bad request');
+		}
+
 	}
 
 	/**
