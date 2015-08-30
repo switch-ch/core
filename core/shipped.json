@@ -3,6 +3,7 @@
   "shippedApps": [
     "activity",
     "admin_audit",
+    "dav",
     "enterprise_key",
     "external",
     "files",
