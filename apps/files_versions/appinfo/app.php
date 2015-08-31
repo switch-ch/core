@@ -19,6 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  *
  */
-OCP\Util::addStyle('files_versions', 'versions');
+
+namespace OCA\Files_Versions\AppInfo;
+
+$app = new Application();
+$container = $app->getContainer();
+
+\OCP\Util::addscript('files_versions', 'versions');
+\OCP\Util::addStyle('files_versions', 'versions');
 
 \OCA\Files_Versions\Hooks::connectHooks();
+
+// Cron job for deleting expired trash items
+$container->getServer()->getJobList()->add('OCA\Files_Versions\BackgroundJob\ExpireVersions');
