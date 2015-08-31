@@ -472,7 +472,7 @@ input[type="submit"].enabled {
 #body-login #submit.login {
 	position: absolute;
 	right: 0;
-	top: 49px;
+	top: 0;
 	border: none;
 	background-color: transparent;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
