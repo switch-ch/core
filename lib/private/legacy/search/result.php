@@ -39,3 +39,6 @@ class OC_Search_Result extends \OCP\Search\Result {
 		$this->type = $type;
 	}
 }
+
+OCP\Backgroundjob::registerJob('OCA\user_ldap\lib\Jobs');
+OCP\Backgroundjob::registerJob('\OCA\User_LDAP\Jobs\CleanUp');
