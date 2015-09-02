@@ -290,6 +290,7 @@
 				this.fileActions.registerAction({
 					name: 'Details',
 					mime: 'all',
+					icon: OC.webroot + '/core/img/actions/info.svg',
 					permissions: OC.PERMISSION_READ,
 					actionHandler: function(fileName, context) {
 						self._updateDetailsView(fileName);
