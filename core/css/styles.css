@@ -24,6 +24,18 @@ body {
 	height: auto;
 }
 
+.pull-left {
+	float: left;
+}
+
+.pull-right {
+	float: right;
+}
+
+.hide {
+	display: none;
+}
+
 #body-login {
 	text-align: center;
 	background: #1d2d44; /* Old browsers */
