@@ -24,6 +24,8 @@ body {
 	height: auto;
 }
 
+/* VARIOUS REUSABLE SELECTORS */
+
 .pull-left {
 	float: left;
 }
@@ -32,9 +34,21 @@ body {
 	float: right;
 }
 
-.hide {
+.hidden {
 	display: none;
 }
+.hidden-visually {
+	position: absolute;
+	left:-10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.bold { font-weight:600; }
+.center { text-align:center; }
+.inlineblock { display: inline-block; }
 
 #body-login {
 	text-align: center;
@@ -827,26 +841,6 @@ label.infield {
 #body-login footer, #body-login .push {
 	height: 70px;
 }
-
-
-
-
-/* VARIOUS REUSABLE SELECTORS */
-.hidden {
-	display: none;
-}
-.hidden-visually {
-	position: absolute;
-	left:-10000px;
-	top: auto;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-}
-
-.bold { font-weight:600; }
-.center { text-align:center; }
-.inlineblock { display: inline-block; }
 
 /* round profile photos */
 .avatar,
