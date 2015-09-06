@@ -83,14 +83,19 @@ class Users {
 		$user = $this->userSession->getUser();
 		$isAdmin = $this->groupManager->isAdmin($user->getUID());
 
+		if (!$isAdmin && !\OC_SubAdmin::isSubAdmin($user->getUID())) {
+			return new OC_OCS_Result(null, \OCP\API::RESPOND_UNAUTHORISED);
+		}
+
 		if($this->userManager->userExists($userId)) {
 			\OCP\Util::writeLog('ocs_api', 'Failed addUser attempt: User already exists.', \OCP\Util::ERROR);
 			return new OC_OCS_Result(null, 102, 'User already exists');
 		}
+
 		if(is_array($groups)) {
 			foreach ($groups as $key => $group) {
 				if(!$this->groupManager->groupExists($group)){
-					return new OC_OCS_Result(null, 104, 'group '.$group.' does not exist ');
+					return new OC_OCS_Result(null, 104, 'group '.$group.' does not exist');
 				}
 				if(!$isAdmin && !OC_SubAdmin::isSubAdminofGroup($user->getUID(), $group)) {
 					return new OC_OCS_Result(null, 105, 'insufficient privileges for group '. $group);
