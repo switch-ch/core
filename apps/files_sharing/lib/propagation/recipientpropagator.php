@@ -127,11 +127,17 @@ class RecipientPropagator {
 		});
 	}
 
+	protected $propagatingIds = [];
+
 	/**
 	 * @param int $id
 	 * @throws NotFoundException
 	 */
 	public function propagateById($id) {
+		if (isset($this->propagatingIds[$id])) {
+			return;
+		}
+		$this->propagatingIds[$id] = true;
 		$shares = Share::getAllSharesForFileId($id);
 		foreach ($shares as $share) {
 			// propagate down the share tree
@@ -152,5 +158,7 @@ class RecipientPropagator {
 				$watcher->writeHook(['path' => $path]);
 			}
 		}
+
+		unset($this->propagatingIds[$id]);
 	}
 }
