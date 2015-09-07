@@ -25,7 +25,6 @@ namespace OCA\Files_Versions\AppInfo;
 $app = new Application();
 $container = $app->getContainer();
 
-\OCP\Util::addscript('files_versions', 'versions');
 \OCP\Util::addStyle('files_versions', 'versions');
 
 \OCA\Files_Versions\Hooks::connectHooks();
