@@ -26,7 +26,7 @@ use \OC\Files\Type\Detection;
 class DetectionTest extends \Test\TestCase {
 
 	public function testDetect() {
-		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$configDir);
+		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$SERVERROOT . '/resources/config/');
 		$dir = \OC::$SERVERROOT.'/tests/data';
 
 		$result = $detection->detect($dir."/");
@@ -51,7 +51,7 @@ class DetectionTest extends \Test\TestCase {
 	}
 
 	public function testGetSecureMimeType() {
-		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$configDir);
+		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$SERVERROOT . '/resources/config/');
 
 		$result = $detection->getSecureMimeType('image/svg+xml');
 		$expected = 'text/plain';
@@ -63,7 +63,7 @@ class DetectionTest extends \Test\TestCase {
 	}
 
 	public function testDetectPath() {
-		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$configDir);
+		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$SERVERROOT . '/resources/config/');
 
 		$this->assertEquals('text/plain', $detection->detectPath('foo.txt'));
 		$this->assertEquals('image/png', $detection->detectPath('foo.png'));
@@ -78,7 +78,7 @@ class DetectionTest extends \Test\TestCase {
 			$this->markTestSkipped('[Windows] Strings have mimetype application/octet-stream on Windows');
 		}
 
-		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$configDir);
+		$detection = new Detection(\OC::$server->getURLGenerator(), \OC::$SERVERROOT . '/resources/config/');
 
 		$result = $detection->detectString("/data/data.tar.gz");
 		$expected = 'text/plain; charset=us-ascii';
@@ -87,7 +87,7 @@ class DetectionTest extends \Test\TestCase {
 
 	public function testMimeTypeIcon() {
 		if (!class_exists('org\\bovigo\\vfs\\vfsStream')) {
-			$this->markTestSkipped('Pacakge vfsStream not installed');
+			$this->markTestSkipped('Package vfsStream not installed');
 		}
 		$confDir = \org\bovigo\vfs\vfsStream::setup();
 		$mimetypealiases_dist = \org\bovigo\vfs\vfsStream::newFile('mimetypealiases.dist.json')->at($confDir);
