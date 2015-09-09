@@ -22,6 +22,7 @@
 namespace OCA\Files_Versions\BackgroundJob;
 
 use OCP\IDBConnection;
+use OCP\IUserManager;
 use OCA\Files_Versions\AppInfo\Application;
 use OCA\Files_Versions\Storage;
 use OCA\Files_Versions\Expiration;
@@ -39,16 +40,22 @@ class ExpireVersions extends \OC\BackgroundJob\TimedJob {
 	 * @var IDBConnection
 	 */
 	private $dbConnection;
+	
+	/**
+	 * @var IUserManager
+	 */
+	private $userManager;
 
-	public function __construct(IDBConnection $dbConnection = null, Expiration $expiration = null) {
+	public function __construct(IDBConnection $dbConnection = null, IUserManager $userManager = null, Expiration $expiration = null) {
 		// Run once per 30 minutes
 		$this->setInterval(60 * 30);
 
-		if (is_null($expiration) || is_null($dbConnection)) {
+		if (is_null($expiration) || is_null($userManager) || is_null($dbConnection)) {
 			$this->fixDIForJobs();
 		} else {
 			$this->dbConnection = $dbConnection;
 			$this->expiration = $expiration;
+			$this->userManager = $userManager;
 		}
 	}
 
@@ -56,6 +63,7 @@ class ExpireVersions extends \OC\BackgroundJob\TimedJob {
 		$application = new Application();
 		$this->dbConnection = \OC::$server->getDatabaseConnection();
 		$this->expiration = $application->getContainer()->query('Expiration');
+		$this->userManager = \OC::$server->getUserManager();
 	}
 
 	protected function run($argument) {
@@ -64,8 +72,7 @@ class ExpireVersions extends \OC\BackgroundJob\TimedJob {
 			return;
 		}
 
-		$userManager = \OC::$server->getUserManager();
-		$users = $userManager->search('');
+		$users = $this->userManager->search('');
 		$isFSready = false;
 		foreach ($users as $user) {
 			$uid = $user->getUID();
@@ -87,8 +94,7 @@ class ExpireVersions extends \OC\BackgroundJob\TimedJob {
 	 * @return boolean
 	 */
 	private function setupFS($user){
-		$userManager = \OC::$server->getUserManager();
-		if (!$userManager->userExists($user)) {
+		if (!$this->userManager->userExists($user)) {
 			return false;
 		}
 
